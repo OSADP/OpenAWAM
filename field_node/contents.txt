@@ -1,0 +1,5 @@
+Brief description of the contents of this folder:
+bluelog			Bluelog v1.1.2 compiled for Raspberry Pi architecture
+instructions.txt	Instructions for assembling a field node
+OpenAWAM_parts_list.ods	Spreadsheet listing equipment needed to assemble
+			a field node, with suggested sourcing
