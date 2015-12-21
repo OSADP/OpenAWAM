@@ -88,9 +88,13 @@ CONTACT US
 
 OpenAWAM is currently being developed by:
 
-John Kerenyi                      Kali Fogel
-City of Moreno Valley             Los Angeles County Metropolitan Transportation Authority
-(951) 413-3199                    (213) 922-2665
+John Kerenyi
+City of Moreno Valley
+(951) 413-3199
+
+Kali Fogel
+Los Angeles County Metropolitan Transportation Authority
+(213) 922-2665
 
 Additional contact information can be found on the project's homepage:
 https://github.com/OSADP/OpenAWAM
