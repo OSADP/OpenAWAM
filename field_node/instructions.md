@@ -1,4 +1,11 @@
+================================
 OpenAWAM Field Node Instructions
+================================
+
+The OpenAWAM field node software stack is based completely on open-source
+software. The only piece that is not readily available from software
+repositories is the *bluelog* program; but its source code is published,
+and 
 
 Hardware required to bench test field node:
 -------------------------------------------
@@ -30,8 +37,13 @@ configure the device. Normally the following should be done:
 - Expand the filesystem to use the entire SD card.
 - Change the password.
 - Set timezone.
-- Set locale. Default is Great Britain; should instead use EN-US-UTF8.
+- Set locale. Default is Great Britain; U.S. users should instead use
+  EN-US-UTF8.
 
+Although it's not essential to set the timezone properly (all the central
+software requires is that the clock be accurate relative to UTC--a goal that
+is achieved by synchronizing with an NTP server), setting the timezone helps
+ensure sane data is provided to the central software.
 
 After finishing with the configurator:
 --------------------------------------
@@ -45,7 +57,7 @@ Install ntpdate and ntp if they are not already installed (ntp is probably
 
   If the Pi can't reach the Internet but there is a time source available on
   the local network, these programs can be configured to use the local time
-  sources instead. Please refer to the program documentation.
+  source instead. Please refer to the program documentation.
 
 Install "bluez" package from repository:
 
@@ -76,6 +88,10 @@ Edit /etc/rc.local to run bluelog as a daemon on startup. Sample line:
 - If you will be using syslog to forward log messages, put this in /etc/rsyslog.conf:
   (replace WW.XX.YY.ZZ with wherever you want these messages to go--a computer
   that is available on the network, and is running the OpenAWAM server)
+
+      # Use high-resolution timestamps for syslog messages forwarded over
+      # the network
+      $ActionForwardDefaultTemplate RSYSLOG_ForwardFormat
 
       # All user messages to be forwarded over UDP to comm server port 50101
       # (bluelog logs to facility user)
@@ -131,8 +147,26 @@ Leave the file /etc/network/interfaces alone.
 Set Hostname
 ------------
 
-Set hostname to something meaningful, such as intersection name. The following
-files need to be changed, if they exist:
+A hostname is nothing more than a user-defined name for a computer on a
+network.
+
+Setting the hostname is important for proper operation of OpenAWAM, because
+the hostname is tied to the location. Specifically, the hostname is included
+in the syslog message forwarded to the central server, and the central server
+matches the hostname to the location field of the nodes table when storing
+the observation to the database.
+
+It's suggested that hostname generation be standardized. The author uses
+four characters for the north/south street, a dash, then four characters for
+the east/west street. So, for example:
+
+    elsw-ales
+    fred-cact
+
+Hostnames must only contain lowercase letters, dashes, and/or numbers.
+Spaces and periods are specifically excluded. 
+
+The following files need to be changed, if they exist:
   /etc/hostname
   /etc/hosts
   /etc/ssh/ssh/ssh_host_ecdsa_key.pub
@@ -180,4 +214,4 @@ Consult the field node parts list for a suggested waterproof housing for the
 field node, and for a Power over Ethernet injector/splitter. The OpenAWAM
 white paper, also located on GitHub, has diagrams for installing to traffic
 signal equipment. This file will be updated to provide additional installation
-instructions based on user feedback. 
+instructions based on user feedback.
