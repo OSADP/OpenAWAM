@@ -10,7 +10,9 @@ and
 Hardware required to bench test field node:
 -------------------------------------------
 - Raspberry Pi
-- SD card--4GB minimum, 8GB preferred
+- Boot drive--either SD card or USB drive. See below for instructions on
+  booting from USB. Either way, the minimum size currently is 4GB with 8GB
+  preferred.
 - Micro USB power cable--get the minimum length needed;
   longer cables cause voltage drops and unreliable operation
 - USB power supply rated for 750 mA or greater (check against
@@ -20,6 +22,10 @@ Hardware required to bench test field node:
 
 (Please refer to the complete field node parts list to assemble a PoE-capable
 field node together with enclosure.)
+
+Regarding booting from USB, see this page for easy-to-follow instructions:
+
+https://www.raspberrypi.org/documentation/hardware/raspberrypi/bootmodes/msd.md
 
 Software:
 ---------
@@ -31,14 +37,23 @@ Get Raspbian installed and working before proceeding further. Instructions for
 this are readily available from multiple sources including the Raspberry Pi
 homepage, and the Raspbian project homepage.
 
-Once you've booted the machine and logged in e.g. via SSH, you'll be asked to
-configure the device. Normally the following should be done:
+Once you've booted the machine and logged in e.g. via SSH, you may be asked to
+configure the device. (If the device doesn't run this program automatically
+when you log in, you should run "sudo raspi-config".) 
 
-- Expand the filesystem to use the entire SD card.
-- Change the password.
+Normally the following should be done, feel free to browse all the available
+options however:
+
+- Expand the filesystem to use the entire SD card. (May have been performed
+  automatically when first booted)
+- Change the default password.
 - Set timezone.
 - Set locale. Default is Great Britain; U.S. users should instead use
   EN-US-UTF8.
+- Set the keyboard type. Default is for Great Britain and should be changed
+  so that U.S. keyboards will work properly (the keyboard settings also
+  affect remote access e.g. via SSH).
+- Set the hostname (see below for more discussion).
 
 Although it's not essential to set the timezone properly (all the central
 software requires is that the clock be accurate relative to UTC--a goal that
@@ -48,16 +63,16 @@ ensure sane data is provided to the central software.
 After finishing with the configurator:
 --------------------------------------
 Install ntpdate and ntp if they are not already installed (ntp is probably
-  already there--but it doesn't hurt to make sure):
+already there--but it doesn't hurt to make sure):
 
 	$ sudo apt-get install ntpdate ntp
 
-  These will work together to keep the Raspberry Pi's clock synced with 
-  standard time sources, assuming the Pi can reach the Internet.
+These will work together to keep the Raspberry Pi's clock synced with 
+standard time sources, assuming the Pi can reach the Internet.
 
-  If the Pi can't reach the Internet but there is a time source available on
-  the local network, these programs can be configured to use the local time
-  source instead. Please refer to the program documentation.
+If the Pi can't reach the Internet but there is a time source available on
+the local network, these programs can be configured to use the local time
+source instead. Please refer to the program documentation.
 
 Install "bluez" package from repository:
 
@@ -98,7 +113,6 @@ Edit /etc/rc.local to run bluelog as a daemon on startup. Sample line:
       user.*	@WW.XX.YY.ZZ:50101
       #     ^^^ [There is a TAB here]
 
-
 ----------------
 Static Addresses
 ----------------
@@ -108,11 +122,27 @@ best practice for ITS since it makes it harder for an unauthorized user to deter
 network resources and configuration. If you plan to deploy OpenAWAM units in the field,
 consideration should be given to using static addresses.
 
+Raspbian Jessie and Later
+-----------------------
+
+Raspbian Jessie (which is the current version) uses dhcpcd to configure network
+resources by default. Therefore, configuration of static addresses has changed.
+Add the following lines to the file /etc/dhcpcd.conf:
+
+interface eth0
+static ip_address=192.168.0.10/24	
+static routers=192.168.0.1
+static domain_name_servers=192.168.0.1 8.8.8.8
+
+Leave the file /etc/network/interfaces alone.
+
 Versions of Debian prior to Jessie
 ----------------------------------
 
-If necessary, adjust /etc/network/interfaces to provide static IP address.
-  Example:  
+If for some reason you are using an older version of Raspbian or another
+distribution that uses the old way, adjust /etc/network/interfaces to provide
+static IP address.
+  Example:
   
   #iface eth0 inet dhcp
   iface eth0 inet static
@@ -128,20 +158,6 @@ If you are using a static address, then edit /etc/resolvconf.conf to have
 this line in the appropriate location:
       name_servers=8.8.8.8
 (And resolvconf will generate resolv.conf correctly to allow DNS resolution.)
-
-Debian Jessie and Later
------------------------
-
-Debian Jessie uses dhcpcd to configure network resources by default. Therefore,
-configuration of static addresses has changed. Add the following lines to the
-file /etc/dhcpcd.conf:
-
-interface eth0
-static ip_address=192.168.0.10/24	
-static routers=192.168.0.1
-static domain_name_servers=192.168.0.1 8.8.8.8
-
-Leave the file /etc/network/interfaces alone.
 
 ------------
 Set Hostname
@@ -164,7 +180,17 @@ the east/west street. So, for example:
     fred-cact
 
 Hostnames must only contain lowercase letters, dashes, and/or numbers.
-Spaces and periods are specifically excluded. 
+Spaces and periods are specifically excluded.
+
+The following are two recommended means to update the hostname on the
+field node:
+
+- Use the raspi-config program as per above in this document.
+- Manually edit the appropriate files, or use a script. The main reason to
+  consider doing this work outside of the configuration program is if you
+  wish to edit the files on the Raspberry Pi boot device without booting it.
+  In this scenario you might load the SD card or USB drive into a Linux
+  computer and edit the files directly.
 
 The following files need to be changed, if they exist:
   /etc/hostname
@@ -175,10 +201,13 @@ The following files need to be changed, if they exist:
 
 Here is a script that can do it (adapted from http://wiki.debian.org/HowTo/ChangeHostname):
 
-This script is meant to be run from the device. Run as root, and be sure to reboot afterward.
-The script takes one parameter, which is the new hostname. If the default (or current)
-hostname is not "raspberrypi", then edit the script to replace "raspberrypi" with the actual
-hostname.
+This script is meant to be run from the device. Run as root, and be sure to
+reboot afterward. The script takes one parameter, which is the new hostname.
+If the default (or current) hostname is not "raspberrypi", then edit the
+script to replace "raspberrypi" with the actual hostname.
+
+Contact the author for a different version of the script which can be run on
+a Linux computer other than the Raspberry Pi.
 
 ------------------------
   

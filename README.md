@@ -1,6 +1,4 @@
 # OpenAWAM
-Open Anonymous Wireless Address Matching Application 
-README
 
 OpenAWAM is an open-source project whose purpose is to allow logging and
 analysis of anonymized Bluetooth addresses from multiple locations in
@@ -8,10 +6,7 @@ an area of interest (generally public streets or other public places).
 
 OpenAWAM is divided into two components: The field component, and central.
 
-
-=====================================
-Field Component: OpenAWAM Field Nodes
-=====================================
+# Field Component: OpenAWAM Field Nodes
 
 The field component consists of instructions to deploy inexpensive
 address readers called "field nodes." The instructions assume a pre-existing
@@ -51,10 +46,7 @@ to log Bluetooth address observations to syslog, and syslog is configured
 to forward the observations (via UDP) to a user-defined location which runs
 the OpenAWAM central software.
 
-
-===============================
-OpenAWAM Central Software
-===============================
+# OpenAWAM Central Software
 
 The central software runs on a computer of the user's choice, which can be
 either Windows or Linux. The central software is developed in Python and
@@ -82,9 +74,7 @@ the following components:
 - Database maintenance scripts to purge old observations to avoid filling
   the disk where the database is stored.
   
-==============================
-CONTACT US
-==============================
+# CONTACT US
 
 OpenAWAM is currently being developed by:
 
