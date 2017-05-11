@@ -1,6 +1,5 @@
-================================
-OpenAWAM Field Node Instructions
-================================
+
+# OpenAWAM Field Node Instructions
 
 The OpenAWAM field node software stack is based completely on open-source
 software. The only piece that is not readily available from software
@@ -129,10 +128,10 @@ Raspbian Jessie (which is the current version) uses dhcpcd to configure network
 resources by default. Therefore, configuration of static addresses has changed.
 Add the following lines to the file /etc/dhcpcd.conf:
 
-interface eth0
-static ip_address=192.168.0.10/24	
-static routers=192.168.0.1
-static domain_name_servers=192.168.0.1 8.8.8.8
+    interface eth0
+    static ip_address=192.168.0.10/24	
+    static routers=192.168.0.1
+    static domain_name_servers=192.168.0.1 8.8.8.8
 
 Leave the file /etc/network/interfaces alone.
 
@@ -142,21 +141,24 @@ Versions of Debian prior to Jessie
 If for some reason you are using an older version of Raspbian or another
 distribution that uses the old way, adjust /etc/network/interfaces to provide
 static IP address.
-  Example:
+
+Example:
   
-  #iface eth0 inet dhcp
-  iface eth0 inet static
-      address 192.168.1.10
-      netmask 255.255.255.0
-      gateway 192.168.1.1
+    #iface eth0 inet dhcp
+    iface eth0 inet static
+        address 192.168.1.10
+        netmask 255.255.255.0
+        gateway 192.168.1.1
   
-  Also consider disabling any lines related to configuring a wireless adapter;
-  those are added by default so that a wireless adapter can plug in and just
-  work; if you're not going to use one then you don't need those lines.
+Also consider disabling any lines related to configuring a wireless adapter;
+those are added by default so that a wireless adapter can plug in and just
+work; if you're not going to use one then you don't need those lines.
 
 If you are using a static address, then edit /etc/resolvconf.conf to have
 this line in the appropriate location:
+
       name_servers=8.8.8.8
+
 (And resolvconf will generate resolv.conf correctly to allow DNS resolution.)
 
 ------------
@@ -193,13 +195,13 @@ field node:
   computer and edit the files directly.
 
 The following files need to be changed, if they exist:
-  /etc/hostname
-  /etc/hosts
-  /etc/ssh/ssh/ssh_host_ecdsa_key.pub
-  /etc/ssh/ssh/ssh_host_rsa_key.pub
-  /etc/ssh/ssh/ssh_host_dsa_key.pub
+    /etc/hostname
+    /etc/hosts
+    /etc/ssh/ssh/ssh_host_ecdsa_key.pub
+    /etc/ssh/ssh/ssh_host_rsa_key.pub
+    /etc/ssh/ssh/ssh_host_dsa_key.pub
 
-Here is a script that can do it (adapted from http://wiki.debian.org/HowTo/ChangeHostname):
+Below is a script that can do it (adapted from http://wiki.debian.org/HowTo/ChangeHostname)
 
 This script is meant to be run from the device. Run as root, and be sure to
 reboot afterward. The script takes one parameter, which is the new hostname.
@@ -211,33 +213,31 @@ a Linux computer other than the Raspberry Pi.
 
 ------------------------
   
-#!/bin/bash
-# 
-usage() {
-   echo "usage : $0 new_hostname"
-   exit 1
-}
+    #!/bin/bash
+    # 
+    usage() {
+       echo "usage : $0 new_hostname"
+       exit 1
+    }
 
-[ -z $1 ] && usage
+    [ -z $1 ] && usage
 
-ancien="raspberrypi" # This is the default hostname; change if necessary
-nouveau=$1
+    ancien="raspberrypi" # This is the default hostname; change if necessary
+    nouveau=$1
 
-for file in \
-   /etc/hostname \
-   /etc/hosts \
-   /etc/ssh/ssh_host_ecdsa_key.pub \
-   /etc/ssh/ssh_host_rsa_key.pub \
-   /etc/ssh/ssh_host_dsa_key.pub \
-do
-   [ -f $file ] && sed -i.old -e "s:$ancien:$nouveau:g" $file
-done
+    for file in \
+       /etc/hostname \
+       /etc/hosts \
+       /etc/ssh/ssh_host_ecdsa_key.pub \
+       /etc/ssh/ssh_host_rsa_key.pub \
+       /etc/ssh/ssh_host_dsa_key.pub \
+    do
+       [ -f $file ] && sed -i.old -e "s:$ancien:$nouveau:g" $file
+    done
 
 ----------------------
 
-============================
-Deploying the Field Node
-============================
+# Deploying the Field Node
 
 Consult the field node parts list for a suggested waterproof housing for the
 field node, and for a Power over Ethernet injector/splitter. The OpenAWAM
